@@ -1,11 +1,18 @@
-
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./pages/Login";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function App() {
   return (
-    <div className="text-3xl text-teal-500">
-      Welcome to ems
-    </div>
-  )
+    <BrowserRouter>
+      <Routes>
+        {/* Redirect root path "/" to /login */}
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;

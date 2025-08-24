@@ -1,23 +1,29 @@
+import dotenv from "dotenv";
+dotenv.config(); // <--- must be first, before importing/using env vars
+
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
+import connectToDatabase from "./db/db.js";
+import authRouter from "./routes/auth.js";
 
-dotenv.config(); // load .env file
-
+connectToDatabase()
 const app = express();
-
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Basic route
-app.get("/", (req, res) => {
-  res.send("Server is running 🚀");
-});
+// routes
+app.use("/api/auth", authRouter);
 
-// Use PORT from .env or fallback to 5000
+// start server AFTER DB is connected
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
-});
+connectToDatabase()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`✅ Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("❌ Failed to connect to DB:", err.message);
+    process.exit(1);
+  });
